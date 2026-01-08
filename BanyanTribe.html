@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>The Banyan Tribe - M.I.D. Database</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=Unna:wght@400;700&family=Quattrocento+Sans:wght@400;700&family=Sorts+Mill+Goudy:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="Extra.css">
+    <style>
+        :root {
+            --bg-color: #000000;
+            --primary-color: #c25436;
+            --secondary-color: #8d6d6d;
+            --accent-color: #e5876b;
+            --text-light: #d4c3c3;
+            --text-dark: #1E1E1E;
+            --shadow-glow: rgba(194, 84, 54, 0.35);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Quattrocento Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-light);
+            line-height: 1.6;
+            background-image: 
+                radial-gradient(circle at 20% 20%, rgba(154, 126, 79, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(138, 155, 140, 0.05) 0%, transparent 50%);
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+
+        /* Header Styles */
+        .wiki-header {
+            background: linear-gradient(135deg, rgba(30, 30, 30, 0.9) 0%, rgba(20, 20, 20, 0.8) 100%);
+            border: 2px solid var(--primary-color);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .wiki-header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="%239A7E4F" stroke-width="0.5" opacity="0.1"/><circle cx="50" cy="50" r="30" fill="none" stroke="%239A7E4F" stroke-width="0.3" opacity="0.1"/></svg>') center/200px repeat;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        .classification-badge {
+            display: inline-block;
+            background: var(--primary-color);
+            color: var(--text-dark);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        .character-name {
+            font-family: 'Oranienbaum', serif;
+            font-size: 3.5rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 30px var(--shadow-glow);
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        .character-title {
+            font-family: 'Unna', serif;
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        .quick-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .info-item {
+            background: rgba(100, 79, 154, 0.1);
+            padding: 12px 15px;
+            border-left: 3px solid var(--primary-color);
+            border-radius: 0 5px 5px 0;
+        }
+        .info-label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--secondary-color); font-weight: bold; }
+        .info-value { font-size: 16px; color: var(--text-light); font-weight: 600; }
+
+        /* Navigation Tabs */
+        .wiki-nav { display: flex; border-bottom: 2px solid var(--primary-color); margin-bottom: 30px; overflow-x: auto; }
+        .nav-tab {
+            background: transparent; border: none; color: var(--secondary-color);
+            padding: 15px 25px; font-family: 'Unna', serif; font-size: 16px;
+            cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.3s ease; white-space: nowrap;
+        }
+        .nav-tab:hover, .nav-tab.active { color: var(--primary-color); border-bottom-color: var(--primary-color); background: rgba(100,79,154,0.1); }
+
+        /* Tab Content */
+        .tab-content { display: none; animation: fadeIn 0.5s ease-in; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity:0; transform:translateY(10px);} to {opacity:1; transform:translateY(0);} }
+
+        /* Section Styles */
+        .section { background: rgba(30,30,30,0.6); border:1px solid var(--primary-color); border-radius:8px; padding:25px; margin-bottom:20px; backdrop-filter: blur(5px); }
+        .section-title { font-family: 'Unna', serif; font-size:1.8rem; color: var(--primary-color); border-bottom:1px solid var(--primary-color); padding-bottom:10px; margin-bottom:20px; display:flex; align-items:center; gap:10px; }
+        .section-icon { width:30px; height:30px; background: var(--primary-color); border-radius:50%; display:flex; align-items:center; justify-content:center; color: var(--text-dark); font-size:14px; }
+
+        /* Grids */
+        .stats-grid, .relationships-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 15px; margin-bottom: 25px; }
+        .stat-item, .relationship-card { background: rgba(100,79,154,0.1); border-radius:8px; padding:15px; transition: all 0.3s ease; }
+        .stat-item:hover { transform: translateY(-5px); box-shadow: 0 5px 20px rgba(154,126,79,0.2); }
+        .relationship-card:hover { transform: translateY(-2px); border-color: var(--primary-color); }
+        .stat-name { font-family:'Unna', serif; font-size:14px; color:var(--secondary-color); text-transform:uppercase; letter-spacing:1px; margin-bottom:5px; }
+        .stat-value { font-size:2.5rem; font-weight:bold; color:var(--primary-color); text-shadow:0 0 10px rgba(154,126,79,0.3); }
+        .relationship-name { font-family:'Unna', serif; font-size:1.2rem; color:var(--accent-color); margin-bottom:5px; }
+        .relationship-role { font-size:12px; color:var(--secondary-color); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+        .relationship-description { font-size:14px; line-height:1.5; color: var(--text-light); }
+
+        .ability-item { background: rgba(138,155,140,0.1); border-left:4px solid var(--accent-color); padding:20px; margin-bottom:15px; border-radius:0 8px 8px 0; }
+        .ability-name { font-family:'Unna', serif; font-size:1.1rem; color:var(--accent-color); margin-bottom:8px; }
+        .ability-description { font-size:14px; line-height:1.6; }
+
+        .quote-box { background: rgba(100,79,154,0.1); border:1px solid var(--primary-color); border-radius:8px; padding:20px; margin:20px 0; font-family:'Sorts Mill Goudy', serif; font-style: italic; font-size:1.1rem; position:relative;}
+        .quote-box::before { content:'"'; font-size:4rem; color:var(--accent-color); position:absolute; top:-10px; left:15px; opacity:0.5; }
+
+        .wiki-footer { text-align:center; padding:30px; margin-top:50px; border-top:1px solid rgba(40,37,190,0.3); font-size:12px; color:var(--secondary-color); }
+        .mystical-rune { display:inline-block; margin:0 10px; color:var(--primary-color); font-family:'Oranienbaum', serif; }
+
+        @media(max-width:768px){.character-name{font-size:2.5rem}.quick-info{grid-template-columns:1fr}.nav-tab{padding:12px 15px; font-size:14px}.stats-grid{grid-template-columns:repeat(2,1fr);}}
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="wiki-header">
+            <div class="classification-badge">M.I.D. Clearance Level: Zeta</div>
+            <div class="header-flex">
+                <img src="img/BanyanCrest.png" alt="Banyan Tribe Emblem" class="character-portrait"/>
+                <div>
+                    <h1 class="character-name">The Banyan Tribe</h1>
+                    <p class="character-title">Soul-Bound Hunters of West Africa</p>
+                </div>
+            </div>
+            <div class="quick-info">
+                <div class="info-item"><div class="info-label">Region</div><div class="info-value">Sub-Saharan & Western Africa</div></div>
+                <div class="info-item"><div class="info-label">Known For</div><div class="info-value">Soul manipulation, Monster Hunting</div></div>
+                <div class="info-item"><div class="info-label">Founding Ancestor</div><div class="info-value">Panin-Anasi I</div></div>
+                <div class="info-item"><div class="info-label">Current Legacy Holders</div><div class="info-value">Anasi Banyan IV</div></div>
+                <div class="info-item"><div class="info-label">Affiliation</div><div class="info-value">Tribe</div></div>
+            </div>
+        </header>
+
+        <!-- Tabs -->
+        <nav class="wiki-nav">
+            <button class="nav-tab active" onclick="showTab('overview')">Overview</button>
+            <button class="nav-tab" onclick="showTab('history')">History</button>
+            <button class="nav-tab" onclick="showTab('culture')">Culture</button>
+            <button class="nav-tab" onclick="showTab('members')">Notable Members</button>
+            <button class="nav-tab" onclick="showTab('abilities')">Abilities</button>
+            <button class="nav-tab" onclick="showTab('artifacts')">Artifacts</button>
+        </nav>
+
+        <!-- Overview -->
+        <div class="tab-content active" id="overview">
+            <div class="section">
+                <h2 class="section-title"><span class="section-icon">📊</span>Overview</h2>
+                <div class="quote-box">
+                    "For generations, the Banyans stood as guardians against darkness, their legacy etched in the souls they protect."
+                </div>
+                <p>The Banyan Tribe is a lineage of soul-bound hunters and scholars originating in West Africa. Renowned for crafting weapons from monster parts and manipulating souls, they have historically acted as guardians of their land, knowledge, and people.</p>
+            </div>
+        </div>
+
+        <!-- History -->
+        <div class="tab-content" id="history">
+            <div class="section">
+                <h2 class="section-title"><span class="section-icon">🕰️</span>History</h2>
+                <div style="background: rgba(100,79,154,0.1); padding:20px; border-radius:8px; margin-bottom:20px;">
+                    <h3 style="color: var(--accent-color);">Origins</h3>
+                    <p>Panin-Anasi I founded the tribe, using monster parts to protect his village and create powerful weapons. He was appointed chief for his courage and good heart, uniting neighboring villages through marriage and diplomacy.</p>
+                </div>
+                <div style="background: rgba(100,79,154,0.1); padding:20px; border-radius:8px; margin-bottom:20px;">
+                    <h3 style="color: var(--accent-color);">Legacy & Colonial Era</h3>
+                    <p>Kwame I led the tribe during colonial incursions. Following the death of his parents in battle, he escaped and later liberated his people. Descendants spread globally, including Leygon’s line in Canada (Tigrunti) and Kwame’s line in West Africa and later America with Anasi IV.</p>
+                </div>
+                <div style="background: rgba(100,79,154,0.1); padding:20px; border-radius:8px;">
+                    <h3 style="color: var(--accent-color);">Modern Influence</h3>
+                    <p>Over centuries, the tribe spread throughout Sub-Saharan and Western Africa, refining their soul-based techniques, weaponry, and leadership. Key figures such as Asantewaa developed the Legacy Weapons, while Kwabena and Kwame preserved freedom and heritage in West Africa.</p>
+                </div>
+            </div>
+
+            <!-- Complete Alternating Timeline Section -->
+<div class="section">
+  <h2 class="section-title"><span class="section-icon">📜</span>Timeline</h2>
+  <div class="timeline-alt">
+
+    <!-- 1400's -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">1400's</span>
+        The spread of monster activity spreads throughout Sub and Western Africa.
+      </div>
+    </div>
+
+    <!-- 1600 -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">1600</span>
+        Panin-Anasi Banyan is born to a librarian and merchant, being their youngest child.
+      </div>
+    </div>
+
+    <!-- 1615 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">1615</span>
+        Panin meets Nobundi from a neighboring village and they become close.
+      </div>
+    </div>
+
+    <!-- 1616 -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">1616</span>
+        Panin starts making items from monsters to help defend his village and family.
+      </div>
+    </div>
+
+    <!-- 1623 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">1623</span>
+        The Chief of the Akese village nominates Panin-Anasi as next village chief for his good deeds and pure heart. Panin later marries [BLANK] and unites neighboring villages together, fortifying the territory over 10 years.
+      </div>
+    </div>
+
+    <!-- 1640's -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">1640's</span>
+        Panin and his men are gravely injured in a battle against a rival group exploiting monsters. On the verge of death, Panin saves his troops and an Angel named Angela heals him, telling him he has more to do. Panin later meets a young Asian boy named Kaigaku and agrees to train him.
+      </div>
+    </div>
+
+    <!-- 1644 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">1644</span>
+        M.I.D and Panin meet to discuss modern monster issues and how to handle them.
+      </div>
+    </div>
+
+    <!-- Late 1640's -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">Late 1640's</span>
+        Kaigaku leaves Panin after a disagreement; they never see each other again.
+      </div>
+    </div>
+
+    <!-- 1696 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">1696</span>
+        An old Panin is on his deathbed. Angela visits him to reveal a prophecy and a chosen one. Panin entrusts his family, declares his eldest son Anu-Anasi II as the next tribe leader, and passes away peacefully.
+      </div>
+    </div>
+
+    <!-- Early 1700's -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">Early 1700's</span>
+        Manu-Anasi Banyan II documents his father's legacy and archives everything. He becomes the first scholar of Banyan.
+      </div>
+    </div>
+
+    <!-- Mid 1700's -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">Mid 1700's</span>
+        Piesie-Ogun I, the 3rd leader of the clan, leads his people on a war and expansion of the Akese territory against rival clans.
+      </div>
+    </div>
+
+    <!-- Late 1700's -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">Late 1700's</span>
+        Asantewaa Banyan becomes the 4th leader. She creates the Legacy weapons (beast daggers of summoning, spiritual staff of creation, quake bracelets of magnetism) which are the strongest in the family.
+      </div>
+    </div>
+
+    <!-- 1815 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">1815</span>
+        Kojo Banyan, the 5th leader, is born.
+      </div>
+    </div>
+
+    <!-- 1840 -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">1840</span>
+        Leygon Banyan, son of Kojo, is born.
+      </div>
+    </div>
+
+    <!-- 1847 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">1847</span>
+        Ama Banyan, daughter of Kojo, is born.
+      </div>
+    </div>
+
+    <!-- 1850's -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">1850's</span>
+        Kojo believes the world is entering a peaceful era and hides all Legacy weapons with his guards.
+      </div>
+    </div>
+
+    <!-- 1856 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">1856</span>
+        Leygon presents his ideas to Kojo, but is rejected. Kojo sends him to travel the world. Leygon encounters big-name clans and becomes a target due to the peaceful nature of the Banyans.
+      </div>
+    </div>
+
+    <!-- 1877 -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">1877</span>
+        Leygon returns after an attack on Akese. He becomes 6th leader and rules tyrannically, wielding the staff of creation. Ama fights Leygon, shattering the staff and banishing him. Leygon carves a pencil from a staff fragment and moves to the Caribbean as Leygon Tigrunti.
+      </div>
+    </div>
+
+    <!-- 1890's -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">1890's</span>
+        Yoofi Banyan, son of Ama, grows up during West African colonialism. The Akese territory is taken by Camden Carpenter. Yoofi escapes to Canada to refine his skills and plans to free his people.
+      </div>
+    </div>
+
+    <!-- 1902 -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">1902</span>
+        ARCANE WEBS PREQUEL: KNIGHTS OF THE ECLIPSE – Kwabena Banyan leads P.E.A.K to defeat Camden Carpenter; everyone sacrifices themselves except Kwabena, who dies defeating Camden.
+      </div>
+    </div>
+
+    <!-- 1940 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">1940</span>
+        ARCANE WEBS PREQUEL 2: RISING SUN – Yoofi emerges from a mystic cave to find Akese land desolate. He escapes capture with a house slave and starts a small family. Leygon's descendants (Tigrunti) remain in Jamaica, living low-profile.
+      </div>
+    </div>
+
+    <!-- 1970 -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">1970</span>
+        Yoofi rebuilds the clan in West Africa but is ambushed by monsters, losing his vision, wife, and children. He banishes himself to Canada; his remaining kids scatter worldwide.
+      </div>
+    </div>
+
+    <!-- 1995 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">1995</span>
+        Yoofi's oldest son, Kwame, has a son named Panin-Anasi. Leon Tigrunti, descendant of Leygon, is born in Jamaica, later moving to America.
+      </div>
+    </div>
+
+    <!-- 1997 -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">1997</span>
+        Kwame and Afua have Tiara Banyan.
+      </div>
+    </div>
+
+    <!-- 2000 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">2000</span>
+        Kwame and Afua have Ogun Banyan II, born with high spiritual level (purple eyes, white hair) and hidden identity.
+      </div>
+    </div>
+
+    <!-- 2004 -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">2004</span>
+        Anasi discovers a text about Panin-Anasi and Angela, meets Angela, and learns about the past, present, and future. He continues secret meetings despite his father Kwame's orders.
+      </div>
+    </div>
+
+    <!-- 2008 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">2008</span>
+        Leon finds Leygon's pencil, which activates its powers and informs him of the Banyans’ stolen legacy. He applies to study abroad in art as the first step in reclaiming it.
+      </div>
+    </div>
+
+    <!-- 2014 -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">2014</span>
+        ARCANE WEBS PREQUEL 3: WANING MOON – Ogun becomes manipulated by Leon, causing destruction. Yoofi kills Ogun to stop him. Anasi leaves home to find his own path, moving in with Angela for college.
+      </div>
+    </div>
+
+    <!-- 2018 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">2018</span>
+        Anasi graduates college and works at The Occultarium Library with Angela. He builds the Expert Lounge to store inventions, artifacts, and texts.
+      </div>
+    </div>
+
+    <!-- 2019 -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">2019</span>
+        Anasi meets Malistare, marries Ohemaa.
+      </div>
+    </div>
+
+    <!-- 2020 -->
+    <div class="timeline-item left">
+      <div class="content">
+        <span class="timeline-year">2020</span>
+        Jonathan and Jelani Banyan are born.
+      </div>
+    </div>
+
+    <!-- 2023 -->
+    <div class="timeline-item right">
+      <div class="content">
+        <span class="timeline-year">2023</span>
+        Anasi joins the Monster Investigation Division.
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+.timeline-alt {
+  position: relative;
+  margin: 40px 0;
+  padding: 0;
+  width: 90%;
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.timeline-alt::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 100%;
+  background: var(--primary-color);
+}
+
+.timeline-item {
+  position: relative;
+  width: 50%;
+  padding: 20px 40px;
+  box-sizing: border-box;
+}
+
+.timeline-item.left {
+  left: 0;
+  text-align: right;
+}
+
+.timeline-item.right {
+  left: 50%;
+  text-align: left;
+}
+
+.timeline-item .content {
+  background: rgba(30,30,30,0.9);
+  padding: 15px 20px;
+  border-radius: 10px;
+  border: 2px solid var(--accent-color);
+  position: relative;
+}
+
+.timeline-item.left .content::after,
+.timeline-item.right .content::after {
+  content: '';
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background: var(--primary-color);
+  border: 3px solid var(--accent-color);
+  border-radius: 50%;
+  top: 20px;
+}
+
+.timeline-item.left .content::after {
+  right: -42px;
+}
+
+.timeline-item.right .content::after {
+  left: -42px;
+}
+
+.timeline-year {
+  display: block;
+  font-weight: bold;
+  color: var(--accent-color);
+  margin-bottom: 5px;
+  font-size: 16px;
+}
+
+@media screen and (max-width: 768px) {
+  .timeline-item, .timeline-item.left, .timeline-item.right {
+    width: 100%;
+    left: 0 !important;
+    text-align: left !important;
+    padding-left: 60px;
+    padding-right: 20px;
+    margin-bottom: 30px;
+  }
+  .timeline-item .content::after {
+    left: -42px !important;
+  }
+  .timeline-alt::before {
+    left: 20px;
+  }
+}
+</style>
+
+        </div>
+
+        <!-- Culture -->
+        <div class="tab-content" id="culture">
+            <div class="section">
+                <h2 class="section-title"><span class="section-icon">🎭</span>Culture</h2>
+                <p>The Banyan Tribe emphasizes responsibility, mastery of soul powers, and protection of community. Rituals, crafting of artifacts from monster parts, and soul-attunement ceremonies are central to their identity. Marks on the body allow manipulation of souls and attunement to weapons.</p>
+            </div>
+        </div>
+
+<!-- Notable Members -->
+<div class="tab-content" id="members">
+    <div class="section">
+        <h2 class="section-title"><span class="section-icon">🔗</span>Notable Members</h2>
+        <div class="relationships-grid">
+
+            <div class="relationship-card">
+                <img src="img/PaninAnasi.jpg" alt="Panin-Anasi I" class="relationship-image">
+                <div class="relationship-name">Panin-Anasi I</div>
+                <div class="relationship-role">Founder & First Chief</div>
+                <div class="relationship-description">Established the tribe, united neighboring villages, and pioneered the use of monsters for defense.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Nobundi.png" alt="Nobundi" class="relationship-image">
+                <div class="relationship-name">Nobundi</div>
+                <div class="relationship-role">The Nobody</div>
+                <div class="relationship-description">Cousin and best friend to PAnin-Anasi, future divider of the family.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/ManuAnasi.jpg" alt="Manu-Anasi II" class="relationship-image">
+                <div class="relationship-name">Manu-Anasi II</div>
+                <div class="relationship-role">Scholar & Historian</div>
+                <div class="relationship-description">Documented his father’s legacy and became the first scholar of the Banyan clan.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/PieseOgun.png" alt="Piesie-Ogun I" class="relationship-image">
+                <div class="relationship-name">Piesie-Ogun I</div>
+                <div class="relationship-role">3rd Leader</div>
+                <div class="relationship-description">Expanded Akese territory through wars against rival clans.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Asantewaa.jpg" alt="Asantewaa Banyan" class="relationship-image">
+                <div class="relationship-name">Asantewaa Banyan</div>
+                <div class="relationship-role">4th Leader</div>
+                <div class="relationship-description">Creator of the Legacy Weapons, strengthening the family’s supernatural arsenal.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Kojo.jpg" alt="Kojo Banyan" class="relationship-image">
+                <div class="relationship-name">Kojo Banyan</div>
+                <div class="relationship-role">5th Leader</div>
+                <div class="relationship-description">Hid the Legacy Weapons in hopes of a peaceful era; father to Leygon and Ama.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Legyon.jpg" alt="Leygon Banyan" class="relationship-image">
+                <div class="relationship-name">Leygon Banyan</div>
+                <div class="relationship-role">6th Leader</div>
+                <div class="relationship-description">Corrupted by the staff of creation; attempted tyrannical rule before being defeated by Ama.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Ama.jpg" alt="Ama Banyan" class="relationship-image">
+                <div class="relationship-name">Ama Banyan</div>
+                <div class="relationship-role">Heroine</div>
+                <div class="relationship-description">Shattered Leygon’s staff and restored order to the tribe.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Yoofi.png" alt="Yoofi Banyan" class="relationship-image">
+                <div class="relationship-name">Yoofi Banyan</div>
+                <div class="relationship-role">Survivor & Rebuilder</div>
+                <div class="relationship-description">Escaped colonial conquest, rebuilt the clan, and preserved its legacy.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Kwame.png" alt="Kwame Banyan" class="relationship-image">
+                <div class="relationship-name">Kwame Banyan</div>
+                <div class="relationship-role">Retired</div>
+                <div class="relationship-description">Son of Yoofi, father of Anasi, Tiara, and Ogun; retired from the family busniess long ago.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Afua.png" alt="Afia Banyan" class="relationship-image">
+                <div class="relationship-name">Afia Banyan</div>
+                <div class="relationship-role">Maame</div>
+                <div class="relationship-description">Wife of Kwame, Mother of Anasi, Tiara, and Ogun; her kindness and love knows no end.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Anasi.png" alt="Anasi Banyan IV" class="relationship-image">
+                <div class="relationship-name">Anasi Banyan IV</div>
+                <div class="relationship-role">Modern Guardian</div>
+                <div class="relationship-description">Continues the family legacy, uncovering past secrets and protecting the clan in modern times.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Ogun.png" alt="Ogun Banyan II" class="relationship-image">
+                <div class="relationship-name">Ogun Banyan II</div>
+                <div class="relationship-role">Spiritual Prodigy</div>
+                <div class="relationship-description">Born with high spiritual power; tragically manipulated and lost during family conflicts.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Tiara.png" alt="Tiara Banyan" class="relationship-image">
+                <div class="relationship-name">Tiara Banyan</div>
+                <div class="relationship-role">Protector & Fighter</div>
+                <div class="relationship-description">Devoted to restoring family unity; skilled fighter and secret researcher.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Kikii.png" alt="Kikii Walker" class="relationship-image">
+                <div class="relationship-name">Kikii Walker</div>
+                <div class="relationship-role">Tech Wiz</div>
+                <div class="relationship-description">Cousin of Anasi.  Not from main family, but highly valued member.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Leon.png" alt="Leon Tigrunti" class="relationship-image">
+                <div class="relationship-name">Leon Tigrunti</div>
+                <div class="relationship-role">Descendant of Leygon</div>
+                <div class="relationship-description">Manipulator of Ogun; seeks to reclaim the Banyan legacy in secret.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Ohema.png" alt="Ohema Banyan" class="relationship-image">
+                <div class="relationship-name">Ohema Banyan</div>
+                <div class="relationship-role">Loving Devoted Wife</div>
+                <div class="relationship-description">Wife of Anasi IV. Currently a writer and musician.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Johnathan.png" alt="Jonathan Banyan" class="relationship-image">
+                <div class="relationship-name">Jonathan Banyan</div>
+                <div class="relationship-role">Next Generation</div>
+                <div class="relationship-description">Son of Anasi, representing the continuation of the clan’s legacy.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Jelani.png" alt="Jelani Banyan" class="relationship-image">
+                <div class="relationship-name">Jelani Banyan</div>
+                <div class="relationship-role">Next Generation</div>
+                <div class="relationship-description">Daughter of Anasi, carrying forward the spiritual and warrior traditions of the Banyans.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Bed.png" alt="Bediako Banyan" class="relationship-image">
+                <div class="relationship-name">Bediako Banyan</div>
+                <div class="relationship-role">Next Generation Prodigy</div>
+                <div class="relationship-description">Son of Anasi, taking after his Uncle Ogun as a spiritual prodigy.</div>
+            </div>
+
+            <div class="relationship-card">
+                <img src="img/Ant.png" alt="Antonio" class="relationship-image">
+                <div class="relationship-name">Antonio</div>
+                <div class="relationship-role">Next Generation</div>
+                <div class="relationship-description">Bastard son of Leon, stand in side kick of Anasi.</div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+        <!-- Abilities -->
+        <div class="tab-content" id="abilities">
+            <div class="section">
+                <h2 class="section-title"><span class="section-icon">⚡</span>Abilities</h2>
+<div class="ability-item">
+    <div class="ability-name">Soul Manipulation</div>
+    <div class="ability-description">Banyans can harmonize with the souls of creatures, objects, or monsters to enhance combat, crafting, and defensive abilities.</div>
+</div>
+<div class="ability-item">
+    <div class="ability-name">Weapon Attunement</div>
+    <div class="ability-description">Weapons crafted from monsters or imbued with spiritual power require alignment of the wielder’s soul, enhancing their potency and unlocking unique abilities.</div>
+</div>
+<div class="ability-item">
+    <div class="ability-name">Soul Convergence</div>
+    <div class="ability-description">Fusing multiple soul-attuned items or powers with the wielder creates integrated tools or amplified supernatural effects.</div>
+</div>
+<div class="ability-item">
+    <div class="ability-name">Legacy Weapon Mastery</div>
+    <div class="ability-description">Banyans can wield ancient family weapons like the Beast Daggers of Summoning, the Spiritual Staff of Creation, and the Quake Bracelets of Magnetism, each with unique supernatural abilities.</div>
+</div>
+<div class="ability-item">
+    <div class="ability-name">Spiritual Awareness</div>
+    <div class="ability-description">Some members, like Ogun Banyan II, possess heightened spiritual perception, allowing them to sense hidden threats, supernatural phenomena, and the presence of mystical entities.</div>
+</div>
+<div class="ability-item">
+    <div class="ability-name">Artifact Empowerment</div>
+    <div class="ability-description">Using enchanted objects such as Leygon’s crafted pencil or angelic relics, Banyans can channel latent magical energy for creation, communication, or combat.</div>
+</div>
+
+            </div>
+        </div>
+
+        <!-- Artifacts -->
+        <div class="tab-content" id="artifacts">
+            <div class="section">
+                <h2 class="section-title"><span class="section-icon">⚔️</span>Artifacts</h2>
+                <div class="ability-item">
+                    <div class="ability-name">Beast Daggers of Summoning</div>
+                    <div class="ability-description">Allows summoning of captured monster spirits for combat or utility purposes.</div>
+                </div>
+                <div class="ability-item">
+                    <div class="ability-name">Spiritual Staff of Creation</div>
+                    <div class="ability-description">Can manipulate elements and constructs, but corrupted by Leygon Banyan.</div>
+                </div>
+                <div class="ability-item">
+                    <div class="ability-name">Ancestral Armor</div>
+                    <div class="ability-description">Soul-infused armor that protects against supernatural threats.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="wiki-footer">
+            <p><span class="mystical-rune">ᚱ</span>Monster Investigation Division Database<span class="mystical-rune">ᚱ</span></p>
+            <p style="margin-top: 10px;">Confidential Tribal File • Clearance Level: Zeta</p>
+            <p style="margin-top:5px;font-size:11px;opacity:0.7;">All information contained herein is classified. Unauthorized access will result in immediate investigation.</p>
+        </footer>
+    </div>
+
+    <script>
+        function showTab(tabName){
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(c => c.classList.remove('active'));
+            const navTabs = document.querySelectorAll('.nav-tab');
+            navTabs.forEach(t => t.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

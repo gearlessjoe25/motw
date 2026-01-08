@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Crimson Era – M.I.D. Database</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=Unna:wght@400;700&family=Quattrocento+Sans:wght@400;700&family=Sorts+Mill+Goudy:ital@0;1&display=swap" rel="stylesheet">
+
+<style>
+:root{
+    --bg:#000;
+    --primary:Crimson;
+    --secondary:#d5a2a2;
+    --accent:#ff4a4a;
+    --text:#d4c3c3;
+    --dark:#1e1e1e;
+    --glow:rgba(194,84,54,.35);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:'Quattrocento Sans',sans-serif;
+    line-height:1.6;
+    background-image:
+        radial-gradient(circle at 20% 20%, rgba(154,126,79,.1), transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(138,155,140,.05), transparent 50%);
+}
+
+.container{max-width:1200px;margin:auto;padding:20px}
+
+/* ===== HEADER ===== */
+.wiki-header{
+    background:linear-gradient(135deg,rgba(30,30,30,.9),rgba(20,20,20,.85));
+    border:2px solid var(--primary);
+    border-radius:8px;
+    padding:30px;
+    margin-bottom:30px;
+    position:relative;
+}
+
+.classification-badge{
+    display:inline-block;
+    background:var(--primary);
+    color:#000;
+    padding:6px 16px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:bold;
+    letter-spacing:1px;
+    margin-bottom:15px;
+}
+
+.character-name{
+    font-family:'Oranienbaum',serif;
+    font-size:3.5rem;
+    color:var(--primary);
+    text-shadow:0 0 30px var(--glow);
+    letter-spacing:2px;
+}
+
+.character-title{
+    font-family:'Unna',serif;
+    font-size:1.4rem;
+    color:var(--accent);
+    font-style:italic;
+    margin-top:5px;
+}
+
+/* ===== QUICK INFO ===== */
+.quick-info{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:15px;
+    margin-top:25px;
+}
+
+.info-item{
+    background:rgba(100,79,154,.1);
+    padding:12px 15px;
+    border-left:3px solid var(--primary);
+    border-radius:0 6px 6px 0;
+}
+
+.info-label{
+    font-size:11px;
+    color:var(--secondary);
+    text-transform:uppercase;
+    letter-spacing:1px;
+    font-weight:bold;
+}
+
+.info-value{
+    font-size:16px;
+    font-weight:600;
+}
+
+/* ===== NAV ===== */
+.wiki-nav{
+    display:flex;
+    border-bottom:2px solid var(--primary);
+    margin-bottom:30px;
+    overflow-x:auto;
+}
+
+.nav-tab{
+    background:none;
+    border:none;
+    color:var(--secondary);
+    padding:15px 25px;
+    font-family:'Unna',serif;
+    font-size:16px;
+    cursor:pointer;
+    border-bottom:3px solid transparent;
+    transition:.3s;
+}
+
+.nav-tab:hover,
+.nav-tab.active{
+    color:var(--primary);
+    border-bottom-color:var(--primary);
+    background:rgba(100,79,154,.1);
+}
+
+/* ===== SECTIONS ===== */
+.section{
+    background:rgba(30,30,30,.65);
+    border:1px solid var(--primary);
+    border-radius:8px;
+    padding:25px;
+    margin-bottom:25px;
+}
+
+.section-title{
+    font-family:'Unna',serif;
+    font-size:1.8rem;
+    color:var(--primary);
+    border-bottom:1px solid var(--primary);
+    padding-bottom:10px;
+    margin-bottom:20px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.section-icon{
+    width:30px;height:30px;
+    background:var(--primary);
+    color:#000;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* ===== QUOTE ===== */
+.quote-box{
+    background:rgba(100,79,154,.1);
+    border:1px solid var(--primary);
+    border-radius:8px;
+    padding:20px;
+    margin-bottom:20px;
+    font-family:'Sorts Mill Goudy',serif;
+    font-style:italic;
+    position:relative;
+}
+
+.quote-box::before{
+    content:'"';
+    position:absolute;
+    top:-10px;
+    left:15px;
+    font-size:4rem;
+    color:var(--accent);
+    opacity:.5;
+}
+
+/* ===== GRID ===== */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:rgba(100,79,154,.1);
+    border-radius:8px;
+    padding:18px;
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 5px 20px rgba(154,126,79,.25);
+}
+
+.card h3{
+    font-family:'Unna',serif;
+    color:var(--accent);
+    margin-bottom:6px;
+}
+
+.card span{
+    font-size:12px;
+    color:var(--secondary);
+    text-transform:uppercase;
+    letter-spacing:1px;
+}
+
+/* ===== TABS ===== */
+.tab-content{display:none;animation:fade .4s ease}
+.tab-content.active{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ===== FOOTER ===== */
+.wiki-footer{
+    text-align:center;
+    padding:30px;
+    border-top:1px solid rgba(194,84,54,.3);
+    font-size:12px;
+    color:var(--secondary);
+}
+
+@media(max-width:768px){
+    .character-name{font-size:2.5rem}
+    .nav-tab{padding:12px 15px;font-size:14px}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header class="wiki-header">
+    <div class="classification-badge">M.I.D. Clearance Level: CLASSIFIED</div>
+    <h1 class="character-name">The Crimson Era</h1>
+    <p class="character-title">Age of Blood, Power, and Collapse</p>
+
+    <div class="quick-info">
+        <div class="info-item"><div class="info-label">Era Type</div><div class="info-value">Global Supernatural Apex</div></div>
+        <div class="info-item"><div class="info-label">Key Figures</div><div class="info-value">Seven Terrestrial Powers</div></div>
+        <div class="info-item"><div class="info-label">Outcome</div><div class="info-value">Global Reset</div></div>
+        <div class="info-item"><div class="info-label">Status</div><div class="info-value">Historical / Classified</div></div>
+    </div>
+</header>
+
+<nav class="wiki-nav">
+    <button class="nav-tab active" onclick="showTab('overview')">Overview</button>
+    <button class="nav-tab" onclick="showTab('regions')">Regions</button>
+    <button class="nav-tab" onclick="showTab('powers')">7 Powers</button>
+    <button class="nav-tab" onclick="showTab('uncharted')">Uncharted</button>
+</nav>
+
+<!-- OVERVIEW -->
+<div id="overview" class="tab-content active">
+    <div class="section">
+        <h2 class="section-title"><span class="section-icon">📖</span>Overview</h2>
+        <div class="quote-box">
+            The Crimson Era marked humanity’s greatest strength—and its greatest failure.
+        </div>
+        <p>
+            The Crimson Era is remembered as the most volatile period in Monster Hunting history.
+            It represents the peak of supernatural evolution, warfare, and influence,
+            immediately preceding a catastrophic collapse that reshaped the world.
+        </p>
+    </div>
+</div>
+
+<!-- REGIONS -->
+<div id="regions" class="tab-content">
+<div class="section">
+<h2 class="section-title"><span class="section-icon">🌍</span>Regions & Peoples</h2>
+
+<div class="grid">
+<div class="card"><h3>Banyan Tribe</h3><span>Africa</span><p>Soul-bound hunters manipulating souls and monster-crafted weapons.</p></div>
+<div class="card"><h3>Dark Brotherhood</h3><span>China</span><p>Chi specialists divided between ninjutsu and monkhood.</p></div>
+<div class="card"><h3>Komatoshi Clan</h3><span>Japan</span><p>Yakuza family wielding a devouring shikigami curse.</p></div>
+<div class="card"><h3>Aankhen Society</h3><span>West Asia</span><p>Genetically evolved guardians blessed with the Gaze of God.</p></div>
+<div class="card"><h3>Carpenter Family</h3><span>Europe</span><p>Marked elites awakened by the Titan’s Breath Flower.</p></div>
+<div class="card"><h3>Reefta People</h3><span>Australia</span><p>Evolved aquatic warriors with extreme durability.</p></div>
+<div class="card"><h3>Bikeyah Blood</h3><span>North America</span><p>Spirit tattoos manifest weapons and creatures.</p></div>
+<div class="card"><h3>El Sol</h3><span>South America</span><p>Solar-powered descendants blessed by God’s Kiss.</p></div>
+</div>
+
+</div>
+</div>
+
+<!-- POWERS -->
+<div id="powers" class="tab-content">
+<div class="section">
+<h2 class="section-title"><span class="section-icon">🔥</span>Seven Terrestrial Powers</h2>
+
+<div class="grid">
+<div class="card"><h3>Piesie-Ogun I</h3><span>The Warmonger</span></div>
+<div class="card"><h3>Nolan Carpenter</h3><span>The God Hands</span></div>
+<div class="card"><h3>Inti Vira</h3><span>The Solar Kiss</span></div>
+<div class="card"><h3>Johetah Sinopa</h3><span>The Skydancer</span></div>
+<div class="card"><h3>Miri Yarramundi</h3><span>The River Queen</span></div>
+<div class="card"><h3>Ayan Netra</h3><span>The Almighty</span></div>
+<div class="card"><h3>Kurohi Komatoshi</h3><span>The Black Sun</span></div>
+</div>
+
+</div>
+</div>
+
+<!-- UNCHARTED -->
+<div id="uncharted" class="tab-content">
+<div class="section">
+<h2 class="section-title"><span class="section-icon">❓</span>Uncharted Groups</h2>
+
+<div class="grid">
+<div class="card"><h3>Angelius Michael</h3><span>The Splicer</span></div>
+<div class="card"><h3>Risus Monoana</h3><span>The Corpse Bride</span></div>
+<div class="card"><h3>Balpo Casso</h3><span>The Boulder</span></div>
+<div class="card"><h3>JoJo Annavermeerus</h3><span>The Commander</span></div>
+</div>
+
+</div>
+</div>
+
+<footer class="wiki-footer">
+    Monster Investigation Division Archive • Clearance Required
+</footer>
+
+</div>
+
+<script>
+function showTab(id){
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>
+
+
