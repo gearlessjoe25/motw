@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Monster Investigation Division | M.I.D.</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Oranienbaum&family=Unna:wght@400;700&family=Quattrocento+Sans:wght@400;700&family=Sorts+Mill+Goudy:ital,wght@0,400;1,400&display=swap" rel="stylesheet"/>
+
+<style>
+:root{
+--bg:#000;
+--primary:#faf5df;
+--secondary:#c18c6b;
+--accent:#ffe9a9;
+--text:#d4d1c3;
+}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Quattrocento Sans', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+                .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+.wiki-header{
+border:2px solid var(--primary);
+border-radius:8px;
+padding:30px;
+margin-bottom:30px;
+background:linear-gradient(135deg,#1e1e1e,#111);
+}
+.header-flex{
+display:flex;
+gap:25px;
+align-items:center;
+flex-wrap:wrap;
+}
+.location-image{
+width:220px;
+border-radius:8px;
+border:1px solid var(--primary);
+}
+.location-name{
+font-family:'Oranienbaum',serif;
+font-size:3rem;
+color:var(--primary);
+}
+.location-title{
+font-family:'Unna',serif;
+font-style:italic;
+color:var(--accent);
+margin-bottom:10px;
+}
+.classification-badge{
+display:inline-block;
+background:var(--primary);
+color:#111;
+padding:5px 15px;
+border-radius:20px;
+font-size:12px;
+font-weight:bold;
+margin-bottom:10px;
+}
+
+.quick-info{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+margin-top:20px;
+}
+.info-item{
+background:rgba(100,79,154,.1);
+padding:12px;
+border-left:3px solid var(--primary);
+}
+.info-label{
+font-size:11px;
+text-transform:uppercase;
+color:var(--secondary);
+}
+.info-value{font-weight:bold}
+
+.wiki-nav{
+display:flex;
+border-bottom:2px solid var(--primary);
+margin-bottom:30px;
+}
+.nav-tab{
+background:none;
+border:none;
+color:var(--secondary);
+padding:15px 25px;
+cursor:pointer;
+font-family:'Unna',serif;
+}
+.nav-tab.active{
+color:var(--primary);
+border-bottom:3px solid var(--primary);
+}
+
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+.section{
+background:rgba(30,30,30,.6);
+border:1px solid var(--primary);
+border-radius:8px;
+padding:25px;
+margin-bottom:20px;
+}
+.section-title{
+font-family:'Unna',serif;
+font-size:1.8rem;
+color:var(--primary);
+margin-bottom:15px;
+}
+
+.block{
+background:rgba(100,79,154,.1);
+padding:20px;
+border-radius:8px;
+margin-bottom:20px;
+}
+
+.ability-item{
+border-left:4px solid var(--accent);
+padding:15px;
+background:rgba(138,155,140,.1);
+margin-bottom:15px;
+}
+.ability-name{
+font-family:'Unna',serif;
+color:var(--accent);
+margin-bottom:5px;
+}
+
+footer{
+text-align:center;
+margin-top:50px;
+font-size:12px;
+color:var(--secondary);
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<header class="wiki-header">
+<div class="classification-badge">M.I.D. Clearance: Zeta</div>
+
+<div class="header-flex">
+<img src="img/M.I.D Facility.png" alt="M.I.D. Langley Facility" class="location-image"/>
+
+<div>
+<h1 class="location-name">Monster Investigation Division</h1>
+<p class="location-title">Headquarters • Secure Facility</p>
+</div>
+</div>
+
+<div class="quick-info">
+<div class="info-item"><div class="info-label">Location</div><div class="info-value">Langley, VA, USA</div></div>
+<div class="info-item"><div class="info-label">Established</div><div class="info-value">1902</div></div>
+<div class="info-item"><div class="info-label">Organization Type</div><div class="info-value">Covert Government Agency</div></div>
+<div class="info-item"><div class="info-label">Operational Status</div><div class="info-value">Active</div></div>
+<div class="info-item"><div class="info-label">Primary Objective</div><div class="info-value">Contain & Neutralize Supernatural Threats</div></div>
+</div>
+</header>
+
+<nav class="wiki-nav">
+<button class="nav-tab active" onclick="showTab('overview')">Overview</button>
+<button class="nav-tab" onclick="showTab('operations')">Operations</button>
+</nav>
+
+<!-- OVERVIEW -->
+<div class="tab-content active" id="overview">
+<div class="section">
+<h2 class="section-title">Location Overview</h2>
+<p>
+Founded in 1902, the Monster Investigation Division (M.I.D.) operates as a covert
+government agency tasked with protecting humanity from supernatural entities
+seeking death, domination, or large-scale destruction.
+The Langley facility serves as the organization’s strategic nerve center.
+</p>
+</div>
+</div>
+
+<!-- OPERATIONS -->
+<div class="tab-content" id="operations">
+<div class="section">
+<h2 class="section-title">Operations & Influence</h2>
+
+<div class="block">
+<h3>Motive</h3>
+<p>
+The M.I.D. exists to safeguard humanity from monsters and occult forces
+that threaten civilian populations. While secrecy is paramount,
+the agency prioritizes containment over eradication—when possible.
+</p>
+</div>
+
+<div class="block">
+<h3>Notable Members & Teams</h3>
+<ul>
+<li>Vesper</li>
+<li>Ethan Blackwood</li>
+<li>Ruby Reid</li>
+<li>Zeta Team</li>
+</ul>
+</div>
+
+<div class="block">
+<h3>Organizational Capabilities</h3>
+
+<div class="ability-item">
+<div class="ability-name">Rapid Response Deployment</div>
+<p>
+Elite teams can be dispatched within hours of supernatural detection,
+often arriving before local authorities are aware of the threat.
+</p>
+</div>
+
+<div class="ability-item">
+<div class="ability-name">Information Suppression</div>
+<p>
+The M.I.D. actively alters, removes, or obscures evidence to prevent
+public awareness of the supernatural.
+</p>
+</div>
+</div>
+
+</div>
+</div>
+
+<footer>
+<p>Monster Investigation Division • Classified Location File</p>
+</footer>
+
+</div>
+
+<script>
+function showTab(id){
+document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+document.getElementById(id).classList.add('active');
+event.target.classList.add('active');
+}
+</script>
+
+</body>
+</html>
