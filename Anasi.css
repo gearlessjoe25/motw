@@ -46,3 +46,21 @@
         grid-template-columns: 1fr;
     }
 }
+
+.relationship-image {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    object-fit: cover;
+}
+
+.item-card {
+    width: 500px;
+    height: 500px;
+    padding: 20px;
+    background: rgba(100, 79, 154, 0.1);
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+
